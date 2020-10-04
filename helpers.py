@@ -2,11 +2,23 @@
 import pywemo
 from dotenv import load_dotenv
 import gspread
+from datetime import date, datetime
 from oauth2client.service_account import ServiceAccountCredentials
 
 def should_water():
+    todays_date = datetime.now()
     records = get_sheet_records("Plant Watering")
-    print(records[-1])
+    if len(records) > 0:
+        last_record = records[-1]
+        last_water_date_string = last_record["Datestamp"]
+        try:
+            last_water_date = datetime.strptime(last_water_date_string, '%Y-%m-%d %H:%M:%S.%f')
+        except:
+            print("Could not get the last water date, something is wrong!")
+            return False
+    else:
+        print("This is a new watering!")
+        return True
 
 def get_sheet_records(sheet_name):
     ## Determine if we should water
