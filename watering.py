@@ -11,17 +11,17 @@ water_switch_ip = os.getenv("WATER_SWITCH_IP")
 
 ## Determine if we should water
 # use creds to create a client to interact with the Google Drive API
-scope = ['https://spreadsheets.google.com/feeds']
+scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret_plant_watering.json', scope)
 client = gspread.authorize(creds)
 
 # Find a workbook by name and open the first sheet
 # Make sure you use the right name here.
-sheet = client.open("Copy of Legislators 2017").sheet1
+sheet = client.open("Plant Watering").sheet1
 
 # Extract and print all of the values
-list_of_hashes = sheet.get_all_records()
-print(list_of_hashes)
+records = sheet.get_all_records()
+print(records)
 
 
 if not develop_mode:
