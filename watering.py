@@ -1,12 +1,23 @@
+import os
 import pywemo
+from dotenv import load_dotenv
+load_dotenv()
 
-## Get instance of wemo switch to control
-address = "192.168.86.31"
-port = pywemo.ouimeaux_device.probe_wemo(address)
-url = 'http://%s:%i/setup.xml' % (address, port)
-plant_switch = pywemo.discovery.device_from_description(url, None)
-
+develop_mode = os.getenv("DEVELOP_MODE", True)
+water_switch_ip = os.getenv("WATER_SWITCH_IP")
 
 ## Determine if we should water
 
-plant_switch.toggle()
+
+
+
+if not develop_mode:
+    water_switch = get_wemo_switch(water_switch_ip)
+
+## Get instance of wemo switch to control
+def get_wemo_switch(ip_address):
+    address = ip_address
+    port = pywemo.ouimeaux_device.probe_wemo(address)
+    url = 'http://%s:%i/setup.xml' % (address, port)
+    plant_switch = pywemo.discovery.device_from_description(url, None)
+    return plant_switch
