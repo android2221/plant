@@ -1,3 +1,4 @@
 .env/
 env/
 client_secret_plant_watering.json
+__pycache__/**
