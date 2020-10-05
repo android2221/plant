@@ -9,13 +9,9 @@ watering_frequency = os.getenv("WATERING_FREQUENCY")
 watering_duration = os.getenv("WATERING_DURATION")
 spreadsheet_name = os.getenv("GOOGLE_SPREADSHEET_NAME")
 
-
 should_water = should_water(watering_frequency, spreadsheet_name)
-print("Should water??")
-print(should_water)
 
-perform_watering(int(watering_duration), develop_mode)
-
-log_watering(spreadsheet_name, watering_duration)
-
-print("Watering complete!")
+if should_water:
+    perform_watering(int(watering_duration), water_switch_ip, develop_mode)
+    log_watering(spreadsheet_name, watering_duration)
+    print("Watering complete!")
