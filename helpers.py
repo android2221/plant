@@ -3,11 +3,30 @@ import pywemo
 from dotenv import load_dotenv
 import gspread
 from datetime import date, datetime, timedelta
+import time
 from oauth2client.service_account import ServiceAccountCredentials
 
-def should_water(watering_frequency):
+def log_watering(spreadsheet_name, watering_duration):
+    print("Logging watering...")
+    sheet = get_google_sheet(spreadsheet_name)
+    log_line = [str(datetime.now()), watering_duration]
+    sheet.append_row(log_line)
+    print("done!")
+
+def perform_watering(watering_duration, develop_mode=True):
+    if not develop_mode:
+        water_switch = get_wemo_switch(water_switch_ip)
+        water_switch.on()
+    print(f"Watering for {watering_duration} seconds...")
+    time.sleep(watering_duration)
+    if not develop_mode:
+        water_switch.off()
+    print('done!')
+    return True
+
+def should_water(watering_frequency, spreadsheet_name):
     todays_date = datetime.now()
-    records = get_sheet_records("Plant Watering")
+    records = get_sheet_records(spreadsheet_name)
     if len(records) > 0:
         last_record = records[-1]
         last_water_date_string = last_record["Datestamp"]
@@ -28,8 +47,7 @@ def is_next_water_time(last_water_date, watering_frequency):
     else:
         return False
 
-
-def get_sheet_records(sheet_name):
+def get_google_sheet(sheet_name):
     ## Determine if we should water
     # use creds to create a client to interact with the Google Drive API
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
@@ -39,7 +57,10 @@ def get_sheet_records(sheet_name):
     # Find a workbook by name and open the first sheet
     # Make sure you use the right name here.
     sheet = client.open(sheet_name).sheet1
+    return sheet
 
+def get_sheet_records(sheet_name):
+    sheet = get_google_sheet(sheet_name)
     # Extract and print all of the values
     records = sheet.get_all_records()
     return records

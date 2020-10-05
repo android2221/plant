@@ -7,11 +7,15 @@ develop_mode = os.getenv("DEVELOP_MODE", True)
 water_switch_ip = os.getenv("WATER_SWITCH_IP")
 watering_frequency = os.getenv("WATERING_FREQUENCY")
 watering_duration = os.getenv("WATERING_DURATION")
+spreadsheet_name = os.getenv("GOOGLE_SPREADSHEET_NAME")
 
 
-if not develop_mode:
-    water_switch = get_wemo_switch(water_switch_ip)
-
-should_water = should_water(watering_frequency)
+should_water = should_water(watering_frequency, spreadsheet_name)
 print("Should water??")
 print(should_water)
+
+perform_watering(int(watering_duration), develop_mode)
+
+log_watering(spreadsheet_name, watering_duration)
+
+print("Watering complete!")
