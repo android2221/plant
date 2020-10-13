@@ -15,3 +15,5 @@ if should_water:
     perform_watering(int(watering_duration), water_switch_ip, develop_mode)
     log_watering(spreadsheet_name, watering_duration)
     print("Watering complete!")
+else:
+    log_next_water(spreadsheet_name, watering_frequency)

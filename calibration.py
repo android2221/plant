@@ -1,7 +1,7 @@
 from helpers import *
 import time
 
-develop_mode=True
+develop_mode=False
 
 if not develop_mode:
     water_switch = get_wemo_switch("192.168.86.31")
