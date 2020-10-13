@@ -17,8 +17,10 @@ def log_next_water(spreadsheet_name, watering_frequency):
     sheet = get_google_sheet(spreadsheet_name, "Next Watering")
     last_water_date = get_last_water_date(spreadsheet_name)
     next_water = get_next_water_date(last_water_date, watering_frequency)
-    line = [str(next_water)]
-    sheet.append_row(line)
+    line = str(next_water)
+    records = sheet.get_all_records()
+    if not any(line in r['Next Watering'] for r in records):
+        sheet.append_row([line])
     print("done!")
 
 def perform_watering(watering_duration, water_switch_ip, develop_mode=True):
